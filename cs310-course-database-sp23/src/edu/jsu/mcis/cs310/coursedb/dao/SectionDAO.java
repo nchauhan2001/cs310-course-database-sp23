@@ -7,7 +7,7 @@ import java.sql.ResultSetMetaData;
 
 public class SectionDAO {
     
-    // INSERT YOUR CODE HERE
+    private static final String QUERY_FIND = "SELECT * FROM section WHERE termid = ? And subjectid = ? AND num = ? ORDER BY crn";
     
     private final DAOFactory daoFactory;
     
@@ -17,7 +17,7 @@ public class SectionDAO {
     
     public String find(int termid, String subjectid, String num) {
         
-        String result = null;
+        String result = "[]";
         
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -28,9 +28,15 @@ public class SectionDAO {
             Connection conn = daoFactory.getConnection();
             
             if (conn.isValid(0)) {
+                ps = conn.prepareStatement(QUERY_FIND);
                 
-                // INSERT YOUR CODE HERE
+                ps.setInt(1, termid);
+                ps.setString(2, subjectid);
+                ps.setString(3, num);
                 
+                rs = ps.executeQuery();
+                
+                result = DAOUtility.getResultSetAsJson(rs);
             }
             
         }
